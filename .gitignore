@@ -1,0 +1,7 @@
+node_modules/
+session-data.json
+admin-config.json
+certs/
+*.pem
+.env
+npm-debug.log
