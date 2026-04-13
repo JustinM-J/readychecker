@@ -260,7 +260,8 @@
         // Check authentication on page load
         async function checkAuth() {
             try {
-                const response = await fetch('http://localhost:3000/api/admin/status', {
+                const apiUrl = window.location.origin + '/api/admin/status';
+                const response = await fetch(apiUrl, {
                     credentials: 'include'
                 });
                 const data = await response.json();
@@ -296,7 +297,8 @@
             const errorDiv = document.getElementById('login-error');
             
             try {
-                const response = await fetch('http://localhost:3000/api/admin/login', {
+                const apiUrl = window.location.origin + '/api/admin/login';
+                const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -324,7 +326,8 @@
         // Logout
         async function logout() {
             try {
-                await fetch('http://localhost:3000/api/admin/logout', {
+                const apiUrl = window.location.origin + '/api/admin/logout';
+                await fetch(apiUrl, {
                     method: 'POST',
                     credentials: 'include'
                 });
@@ -338,7 +341,8 @@
         
         async function loadData() {
             try {
-                const response = await fetch('http://localhost:3000/api/admin/tallies', {
+                const apiUrl = window.location.origin + '/api/admin/tallies';
+                const response = await fetch(apiUrl, {
                     credentials: 'include'
                 });
                 
@@ -412,7 +416,8 @@
             }
             
             try {
-                const response = await fetch('http://localhost:3000/api/admin/data', {
+                const apiUrl = window.location.origin + '/api/admin/data';
+                const response = await fetch(apiUrl, {
                     method: 'DELETE',
                     credentials: 'include'
                 });

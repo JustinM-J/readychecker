@@ -97,7 +97,8 @@ function restartQuiz() {
 // Save session to backend
 async function saveSession() {
     try {
-        const response = await fetch('http://localhost:3000/api/session', {
+        const apiUrl = window.location.origin + '/api/session';
+        const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
