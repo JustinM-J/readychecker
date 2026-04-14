@@ -19,7 +19,7 @@ app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'"],
-            frameSrc: ["*"], // Allow embedding in iframes from any origin
+            frameAncestors: ["*"], // Allow embedding from any origin
             scriptSrc: ["'self'", "'unsafe-inline'"],
             styleSrc: ["'self'", "'unsafe-inline'"],
         }
