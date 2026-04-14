@@ -56,8 +56,8 @@ app.use(session({
 
 // Middleware
 app.use(cors({
-    origin: '*', // Allow all origins for iframe embedding
-    credentials: false // Set to false for wildcard origin
+    origin: true, // Allow any origin but with credentials
+    credentials: true
 }));
 app.use(bodyParser.json());
 app.use(express.static('public'));
