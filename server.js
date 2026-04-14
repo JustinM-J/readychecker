@@ -16,7 +16,14 @@ const HTTPS_PORT = process.env.HTTPS_PORT || 3443;
 
 // Security: Helmet for HTTP headers
 app.use(helmet({
-    contentSecurityPolicy: false, // Allow inline scripts for simplicity
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            frameSrc: ["*"], // Allow embedding in iframes from any origin
+            scriptSrc: ["'self'", "'unsafe-inline'"],
+            styleSrc: ["'self'", "'unsafe-inline'"],
+        }
+    }
 }));
 
 // Rate limiting for API endpoints
@@ -49,8 +56,8 @@ app.use(session({
 
 // Middleware
 app.use(cors({
-    origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : '*',
-    credentials: true
+    origin: '*', // Allow all origins for iframe embedding
+    credentials: false // Set to false for wildcard origin
 }));
 app.use(bodyParser.json());
 app.use(express.static('public'));
