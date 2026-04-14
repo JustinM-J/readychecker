@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Setup - Voting Readiness Checker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .success-message {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .requirements {
+            background: #f3f4f6;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        .requirements ul {
+            margin: 10px 0 0 20px;
+        }
+
+        .requirements li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Admin Setup</h1>
+        <p class="subtitle">Create your admin account to access the dashboard</p>
+
+        <div id="setup-form">
+            <div class="requirements">
+                <strong>Password Requirements:</strong>
+                <ul>
+                    <li>At least 8 characters long</li>
+                    <li>Contains uppercase and lowercase letters</li>
+                    <li>Contains at least one number</li>
+                </ul>
+            </div>
+
+            <div id="error-message" class="error-message hidden"></div>
+
+            <form id="admin-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required autocomplete="username" placeholder="Enter admin username">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required autocomplete="new-password" placeholder="Enter strong password">
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" name="confirm-password" required autocomplete="new-password" placeholder="Confirm password">
+                </div>
+
+                <button type="submit" class="btn">Create Admin Account</button>
+            </form>
+        </div>
+
+        <div id="success-message" class="success-message hidden">
+            <h3>✅ Admin Account Created!</h3>
+            <p><strong>Username:</strong> <span id="created-username"></span></p>
+            <p><strong>Password:</strong> <span id="created-password"></span></p>
+            <br>
+            <p><a href="/admin.html" style="color: #065f46; text-decoration: underline;">Go to Admin Dashboard</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('admin-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const errorDiv = document.getElementById('error-message');
+
+            // Reset error
+            errorDiv.classList.add('hidden');
+
+            // Validation
+            if (!username || username.trim().length === 0) {
+                showError('Username cannot be empty');
+                return;
+            }
+
+            if (password.length < 8) {
+                showError('Password must be at least 8 characters long');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showError('Passwords do not match');
+                return;
+            }
+
+            // Password strength check
+            const hasUpperCase = /[A-Z]/.test(password);
+            const hasLowerCase = /[a-z]/.test(password);
+            const hasNumbers = /\d/.test(password);
+
+            if (!hasUpperCase || !hasLowerCase || !hasNumbers) {
+                showError('Password must contain uppercase letters, lowercase letters, and numbers');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/admin/setup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showSuccess(username, password);
+                } else {
+                    showError(data.error || 'Failed to create admin account');
+                }
+            } catch (error) {
+                console.error('Setup error:', error);
+                showError('Error connecting to server. Please try again.');
+            }
+        });
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('hidden');
+        }
+
+        function showSuccess(username, password) {
+            document.getElementById('setup-form').classList.add('hidden');
+            document.getElementById('success-message').classList.remove('hidden');
+            document.getElementById('created-username').textContent = username;
+            document.getElementById('created-password').textContent = password;
+        }
+    </script>
+</body>
+</html>

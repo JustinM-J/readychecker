@@ -74,7 +74,7 @@ if (!fs.existsSync(DATA_FILE)) {
 // Initialize admin config if it doesn't exist
 if (!fs.existsSync(ADMIN_FILE)) {
     console.warn('\n⚠️  WARNING: No admin credentials found!');
-    console.warn('Run "npm run setup" to create admin credentials.\n');
+    console.warn('Go to /admin-setup.html to create admin credentials.\n');
     fs.writeFileSync(ADMIN_FILE, JSON.stringify({ 
         admins: [],
         allowedIPs: [] // Empty = allow all IPs
@@ -194,10 +194,40 @@ app.post('/api/admin/login', adminLimiter, checkAdminIP, async (req, res) => {
     }
 });
 
-// Admin API: Logout
-app.post('/api/admin/logout', (req, res) => {
-    req.session.destroy();
-    res.json({ success: true, message: 'Logged out' });
+// Admin API: Setup admin account (web-based)
+app.post('/api/admin/setup', (req, res) => {
+    try {
+        const { username, password } = req.body;
+
+        if (!username || !password) {
+            return res.status(400).json({ success: false, error: 'Username and password required' });
+        }
+
+        if (password.length < 8) {
+            return res.status(400).json({ success: false, error: 'Password must be at least 8 characters' });
+        }
+
+        const config = readAdminConfig();
+
+        // Check if admin already exists
+        if (config.admins && config.admins.length > 0) {
+            return res.status(400).json({ success: false, error: 'Admin account already exists' });
+        }
+
+        // Hash password
+        const saltRounds = 10;
+        const passwordHash = bcrypt.hashSync(password, saltRounds);
+
+        // Create admin
+        config.admins = [{ username, passwordHash }];
+        fs.writeFileSync(ADMIN_FILE, JSON.stringify(config, null, 2));
+
+        console.log(`✅ Admin account created: ${username}`);
+        res.json({ success: true, message: 'Admin account created successfully' });
+    } catch (error) {
+        console.error('Setup error:', error);
+        res.status(500).json({ success: false, error: 'Internal server error' });
+    }
 });
 
 // Admin API: Check authentication status
@@ -278,5 +308,7 @@ if (fs.existsSync(ADMIN_FILE)) {
 
 const config = readAdminConfig();
 if (!config.admins || config.admins.length === 0) {
-    console.log('\n⚠️  RUN "npm run setup" to create admin credentials!\n');
+    console.log('\n⚠️  NO ADMIN CREDENTIALS SET UP!');
+    console.log('   Go to: https://readychecker.onrender.com/admin-setup.html');
+    console.log('   to create your admin account.\n');
 }
