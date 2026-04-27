@@ -184,7 +184,7 @@ const results = {
        }
     },
     
-    'ec-photo-id': {
+    'ec-voter-id': {
         title: '⚠️ You need photo ID',
         message: 'You\'re almost ready! You need an accepted form of photo ID to vote in person. This includes a UK passport, driving licence, or free Voter ID. Check what photo ID is',
         type: 'warning'
