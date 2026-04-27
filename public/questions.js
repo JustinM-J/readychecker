@@ -17,7 +17,7 @@ const questionFlow = {
         answers: [
             { text: 'Yes', next: 'registered' },
             { text: 'No', result: 'not-eligible-citizenship' },
-            { text: "I'm not sure", result: 'check-citizenship' }
+            { text: 'I am not sure', result: 'check-citizenship' }
         ]
     },
     

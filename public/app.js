@@ -24,7 +24,7 @@ function showQuestion(questionId) {
             <h2>${question.question}</h2>
             <div class="answers">
                 ${question.answers.map((answer, index) => `
-                    <button class="btn" onclick="handleAnswer('${questionId}', '${answer.text}', '${answer.next || ''}', '${answer.result || ''}')">
+                    <button class="btn" onclick="handleAnswer('${questionId}', ${JSON.stringify(answer.text)}, '${answer.next || ''}', '${answer.result || ''}')">
                         ${answer.text}
                     </button>
                 `).join('')}
