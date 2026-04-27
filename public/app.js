@@ -70,7 +70,12 @@ function showResult(resultId) {
     resultContainer.className = `result-container ${result.type}`;
     
     document.getElementById('result-title').textContent = result.title;
-    document.getElementById('result-message').textContent = result.message;
+    const resultMessage = document.getElementById('result-message');
+    resultMessage.textContent = result.message;
+
+    if (result.link && result.link.href && result.link.text) {
+        resultMessage.innerHTML += ` <a href="${result.link.href}" target="_blank" rel="noopener">${result.link.text}</a>`;
+    }
     
     // Set progress to 100%
     document.getElementById('progress').style.width = '100%';
