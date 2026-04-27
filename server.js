@@ -23,8 +23,7 @@ app.use(helmet({
             scriptSrc: ["'self'"], // CSP compliant - no unsafe-inline
             styleSrc: ["'self'", "'unsafe-inline'"], // Keep for inline styles
         }
-    },
-    xFrameOptions: { action: 'allow' } // Explicitly allow iframe embedding
+    }
 }));
 
 // Rate limiting for API endpoints
