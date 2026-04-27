@@ -19,18 +19,12 @@ function showQuestion(questionId) {
         return;
     }
     
-    container.innerHTML = `
-        <div class="question">
-            <h2>${question.question}</h2>
-            <div class="answers">
-                ${question.answers.map((answer, index) => `
-                    <button class="btn answer-btn" data-next="${answer.next || ''}" data-result="${answer.result || ''}">
-                        ${answer.text}
-                    </button>
-                `).join('')}
-            </div>
-        </div>
-    `;
+    let answersHTML = '';
+    question.answers.forEach((answer, index) => {
+        answersHTML += '<button class="btn answer-btn" data-next="' + (answer.next || '') + '" data-result="' + (answer.result || '') + '">' + answer.text + '</button>';
+    });
+    
+    container.innerHTML = '<div class="question"><h2>' + question.question + '</h2><div class="answers">' + answersHTML + '</div></div>';
     
     // Add event listeners to buttons
     const buttons = container.querySelectorAll('.answer-btn');
