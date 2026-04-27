@@ -19,12 +19,29 @@ function showQuestion(questionId) {
         return;
     }
     
-    let answersHTML = '';
+    // Create the HTML safely
+    const questionDiv = document.createElement('div');
+    questionDiv.className = 'question';
+    
+    const h2 = document.createElement('h2');
+    h2.textContent = question.question;
+    questionDiv.appendChild(h2);
+    
+    const answersDiv = document.createElement('div');
+    answersDiv.className = 'answers';
+    
     question.answers.forEach((answer, index) => {
-        answersHTML += '<button class="btn answer-btn" data-next="' + (answer.next || '') + '" data-result="' + (answer.result || '') + '">' + answer.text + '</button>';
+        const button = document.createElement('button');
+        button.className = 'btn answer-btn';
+        button.textContent = answer.text;
+        button.dataset.next = answer.next || '';
+        button.dataset.result = answer.result || '';
+        answersDiv.appendChild(button);
     });
     
-    container.innerHTML = '<div class="question"><h2>' + question.question + '</h2><div class="answers">' + answersHTML + '</div></div>';
+    questionDiv.appendChild(answersDiv);
+    container.innerHTML = '';
+    container.appendChild(questionDiv);
     
     // Add event listeners to buttons
     const buttons = container.querySelectorAll('.answer-btn');

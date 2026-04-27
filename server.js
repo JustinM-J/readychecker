@@ -20,7 +20,7 @@ app.use(helmet({
         directives: {
             defaultSrc: ["'self'"],
             frameAncestors: ["*"], // Allow embedding from any origin
-            scriptSrc: ["'self'"], // CSP compliant - no unsafe-inline
+            scriptSrc: ["'self'", "'unsafe-inline'"], // Allow inline scripts for compatibility
             styleSrc: ["'self'", "'unsafe-inline'"], // Keep for inline styles
         }
     }
