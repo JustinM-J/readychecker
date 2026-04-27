@@ -24,13 +24,22 @@ function showQuestion(questionId) {
             <h2>${question.question}</h2>
             <div class="answers">
                 ${question.answers.map((answer, index) => `
-                    <button class="btn" onclick="handleAnswer('${questionId}', ${JSON.stringify(answer.text)}, '${answer.next || ''}', '${answer.result || ''}')">
+                    <button class="btn answer-btn" data-next="${answer.next || ''}" data-result="${answer.result || ''}">
                         ${answer.text}
                     </button>
                 `).join('')}
             </div>
         </div>
     `;
+    
+    // Add event listeners to buttons
+    const buttons = container.querySelectorAll('.answer-btn');
+    buttons.forEach((button, index) => {
+        button.addEventListener('click', () => {
+            const answer = question.answers[index];
+            handleAnswer(questionId, answer.text, answer.next || '', answer.result || '');
+        });
+    });
 }
 
 // Handle answer selection
@@ -79,6 +88,12 @@ function showResult(resultId) {
     
     // Set progress to 100%
     document.getElementById('progress').style.width = '100%';
+    
+    // Add event listener for restart button
+    const restartBtn = document.querySelector('.restart-btn');
+    if (restartBtn) {
+        restartBtn.addEventListener('click', restartQuiz);
+    }
 }
 
 // Update progress bar

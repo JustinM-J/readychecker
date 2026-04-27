@@ -20,11 +20,11 @@ app.use(helmet({
         directives: {
             defaultSrc: ["'self'"],
             frameAncestors: ["*"], // Allow embedding from any origin
-            scriptSrc: ["'self'", "'unsafe-inline'"], // Allow inline scripts
-            scriptSrcAttr: ["'unsafe-inline'"], // Allow inline event handlers
-            styleSrc: ["'self'", "'unsafe-inline'"],
+            scriptSrc: ["'self'"], // CSP compliant - no unsafe-inline
+            styleSrc: ["'self'", "'unsafe-inline'"], // Keep for inline styles
         }
-    }
+    },
+    xFrameOptions: { action: 'allow' } // Explicitly allow iframe embedding
 }));
 
 // Rate limiting for API endpoints
